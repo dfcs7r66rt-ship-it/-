@@ -1,0 +1,89 @@
+# سننشئ ملف ZIP يحتوي على ملفات HTML للمنتج الرقمي مع فصول نموذجية وصور placeholder
+import zipfile
+import os
+
+# إنشاء مجلد مؤقت للملفات
+folder_name = "/mnt/data/AI_Product_Final"
+os.makedirs(folder_name, exist_ok=True)
+
+# إنشاء ملف HTML رئيسي
+index_html = f"""<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليلك لتعلم الذكاء الاصطناعي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {{ font-family: 'Cairo', sans-serif; margin:0; padding:0; background-color:#f4f6f8; color:#333; }}
+        header {{ background: linear-gradient(135deg,#4a90e2,#50e3c2); color:white; text-align:center; padding:60px 20px; }}
+        header h1 {{ font-size:3em; margin:0; }}
+        header p {{ font-size:1.3em; margin-top:10px; }}
+        .container {{ width:90%; max-width:1100px; margin:40px auto; }}
+        .chapter {{ background-color:white; padding:25px; margin-bottom:20px; border-radius:12px; box-shadow:0 6px 12px rgba(0,0,0,0.1); }}
+        .chapter h2 {{ color:#4a90e2; }}
+        .chapter p {{ line-height:1.6; }}
+        .download {{ display:inline-block; margin-top:15px; padding:10px 20px; background-color:#f39c12; color:white; text-decoration:none; border-radius:5px; transition:background-color 0.3s; }}
+        .download:hover {{ background-color:#e67e22; }}
+        footer {{ background-color:#333; color:white; text-align:center; padding:25px; margin-top:50px; }}
+    </style>
+</head>
+<body>
+<header>
+    <h1>دليلك لتعلم الذكاء الاصطناعي</h1>
+    <p>دليل شامل لتعلم الذكاء الاصطناعي خطوة بخطوة</p>
+</header>
+
+<div class="container">
+    <div class="chapter">
+        <h2>الفصل الأول: أساسيات الذكاء الاصطناعي</h2>
+        <p>في هذا الفصل سنتعرف على مفهوم الذكاء الاصطناعي وأهم أدواته والتطبيقات العملية له.</p>
+        <a href="files/chapter1.pdf" class="download" target="_blank">تحميل PDF الفصل الأول</a>
+        <a href="files/chapter1.mp4" class="download" target="_blank">مشاهدة الفيديو</a>
+    </div>
+    <div class="chapter">
+        <h2>الفصل الثاني: تعلم الآلة</h2>
+        <p>يتضمن هذا الفصل أساسيات تعلم الآلة مع أمثلة عملية على مشاريع بسيطة.</p>
+        <a href="files/chapter2.pdf" class="download" target="_blank">تحميل PDF الفصل الثاني</a>
+        <a href="files/chapter2.mp4" class="download" target="_blank">مشاهدة الفيديو</a>
+    </div>
+    <div class="chapter">
+        <h2>الفصل الثالث: مشاريع تطبيقية</h2>
+        <p>نطبق ما تعلمناه من خلال مشاريع تفاعلية واقعية، مع شرح خطوة بخطوة.</p>
+        <a href="files/chapter3.pdf" class="download" target="_blank">تحميل PDF الفصل الثالث</a>
+        <a href="files/chapter3.mp4" class="download" target="_blank">مشاهدة الفيديو</a>
+    </div>
+</div>
+
+<footer>
+    <p>جميع الحقوق محفوظة &copy; 2025 دليلك لتعلم الذكاء الاصطناعي</p>
+</footer>
+</body>
+</html>"""
+
+# حفظ الملف
+index_path = os.path.join(folder_name, "index.html")
+with open(index_path, "w", encoding="utf-8") as f:
+    f.write(index_html)
+
+# إنشاء مجلد للملفات الوهمية (PDF + فيديو)
+files_folder = os.path.join(folder_name, "files")
+os.makedirs(files_folder, exist_ok=True)
+
+# إنشاء ملفات placeholder PDF و MP4
+for i in range(1, 4):
+    pdf_path = os.path.join(files_folder, f"chapter{i}.pdf")
+    mp4_path = os.path.join(files_folder, f"chapter{i}.mp4")
+    with open(pdf_path, "wb") as f:
+        f.write(b"%PDF-1.4\n%Placeholder PDF content")
+    with open(mp4_path, "wb") as f:
+        f.write(b"\x00\x00\x00\x20ftypisomPlaceholder MP4 content")
+
+# إنشاء ملف ZIP
+zip_path = "/mnt/data/AI_Product_Final.zip"
+with zipfile.ZipFile(zip_path, 'w') as zipf:
+    for root, dirs, files in os.walk(folder_name):
+        for file in files:
+            zipf.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), folder_name))
+
+zip_path
